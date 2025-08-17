@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MrYapper {
@@ -9,6 +10,8 @@ public class MrYapper {
         String goodbye = "Bye. Hope to see you again soon!";  
         System.out.println(line + "\n" + greeting + "\n" + line);
 
+        ArrayList<String> list = new ArrayList<>();
+
         Scanner scanner = new Scanner(System.in);
         String input;
         
@@ -18,9 +21,20 @@ public class MrYapper {
             if (input.trim().equalsIgnoreCase("bye")) {
                 System.out.println(line + "\n" + goodbye + "\n" + line);
                 break;
+            } else if (input.trim().equalsIgnoreCase("list")) {
+                System.out.println(line);
+                if (list.isEmpty()) {
+                    System.out.println("Empty list.");
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        System.out.println((i + 1) + ". " + list.get(i));
+                    }
+                }
+                System.out.println(line);
+            } else {
+                list.add(input);
+                System.out.println(line + "\n" + "added: " + input + "\n" + line);
             }
-
-            System.out.println(line + "\n" + input + "\n" + line);
         }
 
         scanner.close();
