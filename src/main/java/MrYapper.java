@@ -17,7 +17,7 @@ public class MrYapper {
         
         while (true) {
             input = scanner.nextLine();
-            String[] parts = input.trim().split(" ", 2);
+            String[] parts = input.trim().split(" ");
             String command = parts[0];
 
             if (command.trim().equalsIgnoreCase("bye")) {
@@ -51,6 +51,24 @@ public class MrYapper {
                 } else {
                     System.out.println("Put in a task number that is valid!");
                 }
+            } else if (command.trim().equalsIgnoreCase("todo") || command.trim().equalsIgnoreCase("deadline") ||
+                command.trim().equalsIgnoreCase("event")) {
+                System.out.println("Got it. I've added this task:");
+                if (command.trim().equalsIgnoreCase("todo")) {
+                    ToDo newTodo = new ToDo(input);
+                    tasks.add(newTodo);
+                    System.out.println(newTodo.toString());
+                } else if (command.trim().equalsIgnoreCase("deadline")) {
+                    Deadline newDeadline = new Deadline(input);
+                    tasks.add(newDeadline); 
+                    System.out.println(newDeadline.toString());       
+                } else if (command.trim().equalsIgnoreCase("event")) {
+                    Event newEvent = new Event(input);
+                    tasks.add(newEvent);
+                    System.out.println(newEvent.toString()); 
+                }
+                System.out.println("Now you have " + Integer.toString(tasks.size()) + " tasks in the list.");
+                System.out.println(line);
             } else {
                 tasks.add(new Task(input));
                 System.out.println(line + "\n" + "added: " + input + "\n" + line);
