@@ -56,7 +56,7 @@ public class MrYapper {
                     if (parts.length < 2) {
                         throw new YapperException("Please provide a description");
                     }
-                    System.out.println("Got it. I've added this task:");
+                    System.out.println(line + "\n" + "Got it. I've added this task:");
                     if (command.trim().equalsIgnoreCase("todo")) {
                         ToDo newTodo = new ToDo(input);
                         tasks.add(newTodo);
@@ -72,6 +72,16 @@ public class MrYapper {
                     }
                     System.out.println("Now you have " + Integer.toString(tasks.size()) + " tasks in the list.");
                     System.out.println(line);
+                } else if (command.trim().equalsIgnoreCase("delete")) {
+                    if (parts.length < 2) {
+                        throw new YapperException("Please provide a task number to " + command + ".");
+                    } 
+                    int taskNumber = Integer.parseInt(parts[1]);
+                    if (taskNumber < 1 || taskNumber > tasks.size() + 1) {
+                        throw new YapperException("Invalid task number");
+                    }
+                    System.out.println(line + "\n" + "The task has been removed:" + "\n" + tasks.get(taskNumber - 1).toString() + "\n" + line);
+                    tasks.remove(taskNumber - 1);
                 } else {
                     throw new YapperException("Unknown command.");
                 }
