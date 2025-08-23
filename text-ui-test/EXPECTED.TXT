@@ -1,7 +1,39 @@
-Hello from
- ____        _        
-|  _ \ _   _| | _____ 
-| | | | | | | |/ / _ \
-| |_| | |_| |   <  __/
-|____/ \__,_|_|\_\___|
-
+__________________________________________________
+Hello! I'm Mr Yapper 
+What can I do for you?
+__________________________________________________
+__________________________________________________
+Got it. I've added this task:
+[T][ ] todo read book
+Now you have 1 tasks in the list.
+__________________________________________________
+__________________________________________________
+Got it. I've added this task:
+[D][ ] deadline submit report (by: tomorrow)
+Now you have 2 tasks in the list.
+__________________________________________________
+__________________________________________________
+Here are the tasks in your list:
+1. [T][ ] todo read book
+2. [D][ ] deadline submit report (by: tomorrow)
+__________________________________________________
+__________________________________________________
+Nice! I've marked this task as done: 
+  [X] todo read book
+__________________________________________________
+__________________________________________________
+Here are the tasks in your list:
+1. [T][X] todo read book
+2. [D][ ] deadline submit report (by: tomorrow)
+__________________________________________________
+__________________________________________________
+Error: Put in a task number that is valid!
+__________________________________________________
+__________________________________________________
+Here are the tasks in your list:
+1. [T][X] todo read book
+2. [D][ ] deadline submit report (by: tomorrow)
+__________________________________________________
+__________________________________________________
+Bye. Hope to see you again soon!
+__________________________________________________
