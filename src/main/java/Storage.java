@@ -53,26 +53,22 @@ public class Storage {
         String[] parts = line.split(" \\| ");
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
-
+        
         switch (type) {
         case "T":
             ToDo todo = new ToDo(parts[2]);
             if (isDone) todo.markDone();
             return todo;
         case "D":
-            Deadline deadline = new Deadline(parts[2] + " /by " + parts[3]);
+            Deadline deadline = new Deadline(parts[2], parts[3]);
             if (isDone) deadline.markDone();
             return deadline;
         case "E":
-            String corrected = parts[3]
-                    .replaceAll("from:\\s*", " /from ")
-                    .replaceAll("to:\\s*", " /to ")
-                    .trim();
-            Event event = new Event(parts[2] + " " + corrected);
+            Event event = new Event(parts[2], parts[3], parts[4]);
             if (isDone) event.markDone();
             return event;
         default:
-            throw new YapperException("Invalid task type! " + type);
+            throw new YapperException("Invalid task type! Task type was recognised as: " + type);
         }
     }
 }

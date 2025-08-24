@@ -23,12 +23,14 @@ public class MrYapper {
         
         while (true) {
             input = scanner.nextLine();
-            String[] parts = input.trim().split(" ");
+            String[] parts = input.trim().split(" ", 2);
             String command = parts[0];
+            String desc = parts.length > 1 ? parts[1] : "";
 
             try {
                 if (command.trim().equalsIgnoreCase("bye")) {
                     System.out.println(LINE + "\n" + GOODBYE + "\n" + LINE);
+                    storage.saveTasks(tasks);
                     break;
                 } else if (command.trim().equalsIgnoreCase("list")) {
                     System.out.println(LINE);
@@ -59,17 +61,17 @@ public class MrYapper {
                     }
                 } else if (command.trim().equalsIgnoreCase("todo") || command.trim().equalsIgnoreCase("deadline") ||
                 command.trim().equalsIgnoreCase("event")) {
-                    if (parts.length < 2) {
+                    if (desc.isEmpty()) {
                         throw new YapperException("Please provide a description");
                     }
                     System.out.println(LINE + "\n" + "Got it. I've added this task:");
                     Task newTask;
                     if (command.trim().equalsIgnoreCase("todo")) {
-                        newTask = new ToDo(input);
+                        newTask = new ToDo(desc);
                     } else if (command.trim().equalsIgnoreCase("deadline")) {
-                        newTask = new Deadline(input);      
+                        newTask = new Deadline(desc);      
                     } else {
-                        newTask = new Event(input);
+                        newTask = new Event(desc);
                     }
                     tasks.add(newTask);
                     storage.saveTasks(tasks); // Save changes to the file
@@ -77,10 +79,10 @@ public class MrYapper {
                     System.out.println("Now you have " + Integer.toString(tasks.size()) + " tasks in the list.");
                     System.out.println(LINE);
                 } else if (command.trim().equalsIgnoreCase("delete")) {
-                    if (parts.length < 2) {
+                    if (desc.isEmpty()) {
                         throw new YapperException("Please provide a task number to " + command + ".");
                     } 
-                    int taskNumber = Integer.parseInt(parts[1]);
+                    int taskNumber = Integer.parseInt(desc);
                     if (taskNumber < 1 || taskNumber > tasks.size() + 1) {
                         throw new YapperException("Invalid task number");
                     }

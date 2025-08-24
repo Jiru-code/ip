@@ -1,38 +1,53 @@
-import java.util.StringJoiner;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 
 public class Deadline extends Task{
-    protected String duration;
+    protected LocalDateTime duration;
+    private static final DateTimeFormatter INPUT_FORMATTER_WITH_TIME = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private static final DateTimeFormatter INPUT_FORMATTER_WITHOUT_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    protected String stringDuration;
 
-    public Deadline(String input) {
-        super(input.split("/")[0]);
-        String[] parts = input.split("/");
-        
-        StringJoiner durationJoiner = new StringJoiner(" ");
-        for (int i = 1; i < parts.length; i++) {
-            String currentPart = parts[i].trim();
-            int firstSpaceIndex = currentPart.indexOf(" ");
-            if (firstSpaceIndex != -1) {
-                String key = currentPart.substring(0, firstSpaceIndex);
-                String value = currentPart.substring(firstSpaceIndex + 1);
-                durationJoiner.add(key + ": " + value);
+    public Deadline(String input) throws YapperException {
+        super(input.split("/by")[0].trim());
+        String dateString = input.split("/by")[1].trim();
+        try {
+            if (dateString.contains(" ")) {
+                this.duration = LocalDateTime.parse(dateString, INPUT_FORMATTER_WITH_TIME);
             } else {
-                durationJoiner.add(currentPart);
+                this.duration = LocalDate.parse(dateString, INPUT_FORMATTER_WITHOUT_TIME).atStartOfDay();
             }
+        } catch (DateTimeParseException e) {
+            this.stringDuration = dateString;
         }
-        
-        this.duration = "(" + durationJoiner.toString() + ")";
+    }
+
+    public Deadline(String description, String durationString) throws YapperException {
+        super(description);
+        try {
+            this.duration = LocalDateTime.parse(durationString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        } catch (DateTimeParseException e) {
+            this.stringDuration = durationString;
+        }
     }
 
     @Override 
     public String toString() {
-        return "[D]" + super.toString() + this.duration;
-    }    
+        if (duration == null) {
+            return "[D]" + super.toString() + " (by: " + this.stringDuration + ")";
+        } else {
+            return "[D]" + super.toString() + " (by: " + this.duration.format(DateTimeFormatter.ofPattern("MMM dd yyyy, ha")) + ")";
+        }
+    }   
 
     @Override
     public String toFileString() {
-        int startOfDuration = duration.indexOf(":") + 1;
-        int endOfDuration = duration.indexOf(")");
-        String editedDuration = duration.substring(startOfDuration, endOfDuration);
-        return "D" + super.toFileString() + "|" + editedDuration;
+        if (duration == null) {
+            return "D" + super.toFileString() + " | " + this.stringDuration;
+        } else {
+            return "D" + super.toFileString() + " | " + this.duration.toString();
+        }
     }
 }

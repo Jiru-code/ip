@@ -1,35 +1,56 @@
-import java.util.StringJoiner;
+import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Event extends Task{
-    protected String duration;
+    protected LocalDateTime from;
+    protected LocalDateTime to;
+    private static final DateTimeFormatter INPUT_FORMATTER_WITH_TIME = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private static final DateTimeFormatter INPUT_FORMATTER_WITHOUT_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    public Event(String input) {
-        super(input.split("/")[0]);
-        String[] parts = input.split("/");
-        StringJoiner durationJoiner = new StringJoiner(" ");
-        for (int i = 1; i < parts.length; i++) {
-            String currentPart = parts[i].trim();
-            int firstSpaceIndex = currentPart.indexOf(" ");
-            if (firstSpaceIndex != -1) {
-                String key = currentPart.substring(0, firstSpaceIndex);
-                String value = currentPart.substring(firstSpaceIndex + 1);
-                durationJoiner.add(key + ": " + value);
+    public Event(String input) throws YapperException {
+        super(input.split("/from")[0].trim());
+        try {
+            String[] parts = input.split("/from")[1].split("/to");
+            String fromDateString = parts[0].trim();
+            String toDateString = parts[1].trim();
+
+            if (fromDateString.contains(" ")) {
+                this.from = LocalDateTime.parse(fromDateString, INPUT_FORMATTER_WITH_TIME);
             } else {
-                durationJoiner.add(currentPart);
+                this.from = LocalDate.parse(fromDateString, INPUT_FORMATTER_WITHOUT_TIME).atStartOfDay();
             }
+
+            if (toDateString.contains(" ")) {
+                this.to = LocalDateTime.parse(toDateString, INPUT_FORMATTER_WITH_TIME);
+            } else {
+                this.to = LocalDate.parse(toDateString, INPUT_FORMATTER_WITHOUT_TIME).atStartOfDay();
+            }
+
+        } catch (DateTimeParseException | ArrayIndexOutOfBoundsException e) {
+            throw new YapperException("Please provide event in the format description /from [date] /to [date]. Dates can be d/M/yyyy HHmm or yyyy-MM-dd.");
         }
-        
-        this.duration = "(" + durationJoiner.toString() + ")";
+    }
+
+    public Event(String description, String fromString, String toString) throws YapperException {
+        super(description);
+        try {
+            this.from = LocalDateTime.parse(fromString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+            this.to = LocalDateTime.parse(toString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        } catch (DateTimeParseException e) {
+            throw new YapperException("Error loading event dates from file.");
+        }
     }
 
     @Override 
     public String toString() {
-        return "[E]" + super.toString() + this.duration;
+        return "[E]" + super.toString() + " (from: " + this.from.format(DateTimeFormatter.ofPattern("MMM dd yyyy, ha")) +
+                " to: " + this.to.format(DateTimeFormatter.ofPattern("MMM dd yyyy, ha")) + ")";
     }
 
     @Override
     public String toFileString() {
-        return "E" + " | " + (isDone ? "1" : "0") + " | " + 
-                getDescription() + "| " + this.duration.substring(1, this.duration.length() - 1);
+        return "E" + super.toFileString() + " | " + this.from.toString() + " | " + this.to.toString();
     }
 }

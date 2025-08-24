@@ -1,5 +1,3 @@
-D | 0 | deadline eat | tmr
-E | 0 | event drink | from: today to: tmr
-T | 0 | todo activity 1
-T | 0 | todo activity 2
-T | 0 | todo activity 3
+D | 0 | return book | 2019-12-02T18:00
+D | 0 | return computer | 2019-10-15T00:00
+D | 0 | return laptop | June 6th
