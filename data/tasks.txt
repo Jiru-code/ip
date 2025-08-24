@@ -1,0 +1,5 @@
+D | 0 | deadline eat | tmr
+E | 0 | event drink | from: today to: tmr
+T | 0 | todo activity 1
+T | 0 | todo activity 2
+T | 0 | todo activity 3
