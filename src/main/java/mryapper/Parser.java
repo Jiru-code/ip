@@ -1,3 +1,5 @@
+package mryapper;
+
 public class Parser {
     public String[] parseCommand(String fullCommand) {
         String[] parts = fullCommand.trim().split(" ", 2);

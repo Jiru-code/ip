@@ -1,4 +1,6 @@
-class YapperException extends Exception {
+package mryapper;
+
+public class YapperException extends Exception {
     public YapperException(String message) {
         super(message);
     }
