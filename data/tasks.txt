@@ -1,5 +1,5 @@
 D | 0 | return book | 2019-12-02T18:00
-D | 0 | return computer | 2019-10-15T00:00
 D | 0 | return laptop | June 6th
 E | 0 | tyedye | 2019-10-15T00:00 | 2019-12-02T18:00
 E | 0 | dyetye | Monday | Friday
+T | 0 | activity 1
