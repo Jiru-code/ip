@@ -27,12 +27,17 @@ test {
     }
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'mryapper.MrYapper'
+    }
+}
 application {
-    mainClass.set("seedu.duke.Duke")
+    mainClass.set("mryapper.MrYapper")
 }
 
 shadowJar {
-    archiveBaseName = "duke"
+    archiveBaseName = "mryapper"
     archiveClassifier = null
 }
 
