@@ -4,20 +4,21 @@ import mryapper.YapperException;
 import java.util.ArrayList;
 
 /**
- * Represents the enntire lists of tasks, stored as an ArrayList<Task>.
+ * Represents the lists of tasks and functions operation on a the task list
  */
 public class TaskList {
     private ArrayList<Task> tasks;
 
     /**
-     * Constructs a new TaskList when there is no file storing all the Tasks as a text file on the device.
+     * Constructs a new TaskList assuming no TaskList can be found from existing data.
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
     }
 
     /**
-     * Constructs a new TaskList loading the file that stores all the Tasks as a text file on the device.
+     * Constructs a new TaskList given that tasks can be found from existing data
+     * @param tasks Tasks found from existing data.
      */
     public TaskList(ArrayList<Task> tasks) {
         this.tasks = tasks;
@@ -47,11 +48,11 @@ public class TaskList {
     }
 
     /**
-     * Mark a task on the TaskList as done, from the command "mark"
+     * Mark a task as done and display accordingly.
      * 
-     * @param index The index number of the task to be marked on the TaskList. 
-     * @return a string representation when the method markDone() is called on the Task specified.
-     * @throws YapperException when index is invalid. Valid range: 0 <= index < number of tasks.
+     * @param index The index number of a task when you call the command "list".
+     * @return String that is returned by the markDone() function when a Task calls it.
+     * @throws YapperException when invalid index number is given.
      */
     public String markTaskAsDone(int index) throws YapperException {
         if (index < 0 || index >= tasks.size()) {
@@ -75,8 +76,21 @@ public class TaskList {
     }
 
     /**
-     * Returns a ArrayList<Task>.
+     * Find all the tasks in a tasklist that has the specified keyword.
+     * 
+     * @param keyword The keyword we are searching for in the task description.
+     * @return a mataching ArrayList of tasks.
      */
+    public ArrayList<Task> findTasks(String keyword) {
+        ArrayList<Task> found = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                found.add(task);
+            }
+        }
+        return found;
+    }
+
     public ArrayList<Task> getTasks() {
         return tasks;
     }

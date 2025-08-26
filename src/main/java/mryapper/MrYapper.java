@@ -6,6 +6,7 @@ import taskmanager.Storage;
 import taskmanager.Task;
 import taskmanager.TaskList;
 import taskmanager.ToDo;
+import java.util.ArrayList;
 
 /**
  * Kickstarts the chatbot up and running.
@@ -70,6 +71,9 @@ public class MrYapper {
                 case "delete":
                     handleDeleteCommand(args);
                     break;
+                case "find":
+                    handleFindCommand(args);
+                    break;
                 default:
                     throw new YapperException("Unknown command.");
                 }
@@ -125,6 +129,20 @@ public class MrYapper {
         ui.showTaskRemoved(removedTask, tasks.getSize());
     }
 
+    /**
+     * Handle the right logic when the command "find" is entered.
+     * 
+     * @param args String words we want to find in our Task description.
+     * @throws YapperException the user does not include keywords.
+     */
+    private void handleFindCommand(String args) throws YapperException {
+        if(args.isEmpty()) {
+            throw new YapperException("Stop clowning and include a keyword for me to search for");
+        }
+
+        ArrayList<Task> foundTasks = tasks.findTasks(args);
+        ui.showTasksFound(foundTasks);
+    }
 
     public static void main(String[] args) {
         new MrYapper().run();
