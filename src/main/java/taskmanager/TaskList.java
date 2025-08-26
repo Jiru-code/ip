@@ -39,6 +39,22 @@ public class TaskList {
         return tasks.get(index).markUndone();
     }
 
+    /**
+     * Find all the tasks in a tasklist that has the specified keyword
+     * 
+     * @param keyword The keyword we are searching for in the task description
+     * @return a mataching ArrayList of tasks 
+     */
+    public ArrayList<Task> findTasks(String keyword) {
+        ArrayList<Task> found = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                found.add(task);
+            }
+        }
+        return found;
+    }
+
     public ArrayList<Task> getTasks() {
         return tasks;
     }

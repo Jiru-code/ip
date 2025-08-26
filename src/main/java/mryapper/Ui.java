@@ -51,6 +51,24 @@ public class Ui {
         }
         System.out.println(LINE);
     }
+
+    /**
+     * Displays the tasks which includes certain keyword(s).
+     * 
+     * @throws YapperException none of the Tasks contain a matching description.
+     */
+    public void showTasksFound(ArrayList<Task> foundTasks) throws YapperException {
+        System.out.println(LINE);
+        if (foundTasks.isEmpty()) {
+            System.out.println("No matching keyword found among tasks! Try something else.");
+        } else {
+            System.out.println("I found the following matches! ");
+            for (int i = 0; i < foundTasks.size(); i++) {
+                System.out.println((i + 1) + ". " + foundTasks.get(i).toString());
+            }
+        }
+        System.out.println(LINE);
+    }
     
     public void showMarkedTask(String message) {
         System.out.println(LINE + "\n" + message + "\n" + LINE);
