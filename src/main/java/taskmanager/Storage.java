@@ -85,7 +85,7 @@ public class Storage {
         String[] parts = line.split(" \\| ");
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
-        
+
         switch (type) {
         case "T":
             ToDo todo = new ToDo(parts[2]);
