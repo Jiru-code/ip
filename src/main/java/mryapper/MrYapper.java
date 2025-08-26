@@ -12,7 +12,7 @@ public class MrYapper {
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
-    private Parser parser; 
+    private Parser parser;
 
     public MrYapper() {
         ui = new Ui();
@@ -47,52 +47,15 @@ public class MrYapper {
                     break;
                 case "mark":
                 case "unmark":
-                    if (args.isEmpty()) {
-                        throw new YapperException("Please provide a task number to " + command + ".");
-                    }
-                    int taskNumber = Integer.parseInt(args) - 1; 
-                    if (command.equals("mark")) {
-                        ui.showMarkedTask(tasks.markTaskAsDone(taskNumber));
-                    } else {
-                        ui.showMarkedTask(tasks.markTaskAsUndone(taskNumber));
-                    }
-                    storage.saveTasks(tasks.getTasks());
+                    handleMarkCommand(command, args);
                     break;
                 case "todo":
-                    if (args.isEmpty()) {
-                        throw new YapperException("What's your task about? Don't add empty tasks u dummy!");
-                    }
-                    Task newToDo = new ToDo(args);
-                    tasks.add(newToDo);
-                    storage.saveTasks(tasks.getTasks());
-                    ui.showTaskAdded(newToDo, tasks.getSize());
-                    break;
                 case "deadline":
-                    if (args.isEmpty() || !args.contains("/by")) {
-                        throw new YapperException("Have you told me what your task is about? And when is it /by??");
-                    }
-                    Task newDeadline = new Deadline(args);
-                    tasks.add(newDeadline);
-                    storage.saveTasks(tasks.getTasks());
-                    ui.showTaskAdded(newDeadline, tasks.getSize());
-                    break;
                 case "event":
-                    if (args.isEmpty() || !args.contains("/from") || !args.contains("/to")) {
-                        throw new YapperException("Have you told me what your task is about? /from when /to when??");
-                    }
-                    Task newEvent = new Event(args);
-                    tasks.add(newEvent);
-                    storage.saveTasks(tasks.getTasks());
-                    ui.showTaskAdded(newEvent, tasks.getSize());
+                    handleTaskCommand(command, args);
                     break;
                 case "delete":
-                    if (args.isEmpty()) {
-                        throw new YapperException("Please provide a task number to delete.");
-                    }
-                    int taskIndex = Integer.parseInt(args) - 1;
-                    Task removedTask = tasks.delete(taskIndex);
-                    storage.saveTasks(tasks.getTasks());
-                    ui.showTaskRemoved(removedTask, tasks.getSize());
+                    handleDeleteCommand(args);
                     break;
                 default:
                     throw new YapperException("Unknown command.");
@@ -102,6 +65,53 @@ public class MrYapper {
             }
         }
     }
+
+    private void handleMarkCommand(String command, String args) throws YapperException {
+        if (args.isEmpty()) {
+            throw new YapperException("Please provide a task number to " + command + ".");
+        }
+        int taskNumber = Integer.parseInt(args) - 1;
+        if (command.equals("mark")) {
+            ui.showMarkedTask(tasks.markTaskAsDone(taskNumber));
+        } else {
+            ui.showMarkedTask(tasks.markTaskAsUndone(taskNumber));
+        }
+        storage.saveTasks(tasks.getTasks());
+    }
+
+    private void handleTaskCommand(String command, String args) throws YapperException {
+        if (args.isEmpty()) {
+            throw new YapperException("The description of a " + command + " cannot be empty.");
+        }
+        Task newTask;
+        if (command.equals("todo")) {
+            newTask = new ToDo(args);
+        } else if (command.equals("deadline")) {
+            if (!args.contains("/by")) {
+                throw new YapperException("Have you told me when your task is /by??");
+            }
+            newTask = new Deadline(args);
+        } else {
+            if (!args.contains("/from") || !args.contains("/to")) {
+                throw new YapperException("Have you told me when your task is /from when /to when??");
+            }
+            newTask = new Event(args);
+        }
+        tasks.add(newTask);
+        storage.saveTasks(tasks.getTasks());
+        ui.showTaskAdded(newTask, tasks.getSize());
+    }
+
+    private void handleDeleteCommand(String args) throws YapperException {
+        if (args.isEmpty()) {
+            throw new YapperException("Please provide a task number to delete.");
+        }
+        int taskIndex = Integer.parseInt(args) - 1;
+        Task removedTask = tasks.delete(taskIndex);
+        storage.saveTasks(tasks.getTasks());
+        ui.showTaskRemoved(removedTask, tasks.getSize());
+    }
+
 
     public static void main(String[] args) {
         new MrYapper().run();
