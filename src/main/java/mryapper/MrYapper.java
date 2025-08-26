@@ -7,13 +7,21 @@ import taskmanager.Task;
 import taskmanager.TaskList;
 import taskmanager.ToDo;
 
+/**
+ * Kickstarts the chatbot up and running.
+ */
 public class MrYapper {
+    /** Filepath of where the tasks are stored relative to project root directory */
     private static final String FILE_PATH = "data/tasks.txt";
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
     private Parser parser; 
 
+    /**
+     * Constructs a new chatbot instance, with new Ui, Parser and Storage classes initialised. 
+     * Also retrieves the tasks that have been stored previously into the current 'tasks' field.
+     */
     public MrYapper() {
         ui = new Ui();
         parser = new Parser();
@@ -26,11 +34,16 @@ public class MrYapper {
         }
     }
 
+    /**
+     * Runs the chatbot method
+     */
     public void run() {
-        ui.showGreeting();
-        boolean isExit = false;
+        ui.showGreeting(); 
+        boolean isExit = false; // variable to determine whether the chatbot continues running in a loop
         while (!isExit) {
-            String fullCommand = ui.readCommand();
+            //reads the incoming command, and then parse and split it up into the main command (the first word)
+            //and the rest of the command (the rest of the words)
+            String fullCommand = ui.readCommand(); 
             String[] parsedCommand = parser.parseCommand(fullCommand);
             String command = parsedCommand[0].toLowerCase();
             String args = parsedCommand[1];

@@ -1,5 +1,8 @@
 package taskmanager;
 
+/**
+ * Represents a ToDo task on task list!
+ */
 public class ToDo extends Task{
     public ToDo(String description) {
         super(description);

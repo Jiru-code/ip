@@ -6,14 +6,28 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Represents an Event task on the tasklist.
+ */
 public class Event extends Task{
+    // If not recognised in suitable DateTime format, we will simply store the deadline as a string 
+    protected String stringDuration;
     protected LocalDateTime from;
     protected String stringFrom;
     protected LocalDateTime to;
     protected String stringTo;
+
+    // Formats in which we recognise dates and time by the User and stored as a LocalDateTime object.
     private static final DateTimeFormatter INPUT_FORMATTER_WITH_TIME = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
     private static final DateTimeFormatter INPUT_FORMATTER_WITHOUT_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    /**
+     * Constructs a new Event using user's input. Uses the keyword "/from" and "/to" to
+     * split up the user's input. Stores the Task details as three parts: its description, 
+     * from when, and to when.
+     * 
+     * @param input The entire string that the user keyed in, less the command.
+     */
     public Event(String input) throws YapperException {
         super(input.split("/from")[0].trim());
         String[] parts = input.split("/from")[1].split("/to");
@@ -38,6 +52,13 @@ public class Event extends Task{
         }
     }
 
+    /**
+     * Constructs a new Event using format of tasks stored in .txt file
+     * 
+     * @param description String description of the task. 
+     * @param fromString String from when the event started is stored in .txt file. Tries to convert into LocalDateTime format else stored as a string.
+     * @param toString String to when the event ends is stored in .txt file. Tries to convert into LocalDateTime format else stored as a string.
+     */
     public Event(String description, String fromString, String toString) throws YapperException {
         super(description);
         this.stringFrom = fromString;
@@ -61,6 +82,12 @@ public class Event extends Task{
         }
     }
 
+    /**
+     * Returns event task as a formatted string to be saved in a 
+     * .txt file
+     * 
+     * @return String written in format saved in file, with the from and to in proper format.
+     */
     @Override
     public String toFileString() {
         if (from == null || to == null) {

@@ -10,13 +10,28 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Control all functionalities of storing the lists of tasks offline on the device.
+ */
 public class Storage {
     private final Path filePath;
 
+    /**
+     * Constructs a Storage object with the specified file path.
+     *
+     * @param filePath The path to the data file.
+     */
     public Storage(String filePath) {
         this.filePath = Paths.get(filePath);
     }
 
+    /**
+     * Loads tasks from the data file.
+     * If the file does not exist, it creates a new one and returns an empty list.
+     *
+     * @return An ArrayList of Task objects loaded from the file.
+     * @throws YapperException If there is an error creating or reading the file.
+     */
     public ArrayList<Task> loadTasks() throws YapperException {
         ArrayList<Task> tasks = new ArrayList<>();
         File taskFile = this.filePath.toFile();
@@ -42,6 +57,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the current list of tasks to the data file.
+     *
+     * @param tasks The ArrayList of Task objects to be saved.
+     * @throws YapperException If there is an error writing to the file.
+     */
     public void saveTasks(ArrayList<Task> tasks) throws YapperException {
         try (FileWriter writer = new FileWriter(this.filePath.toString())) {
             for (Task task : tasks) {
@@ -52,6 +73,14 @@ public class Storage {
         }
     }
 
+    /**
+     * Parses a single line from the data file and creates a Task object.
+     * The line format is expected to be "Type | isDone | Description | ...".
+     *
+     * @param line The string line to be parsed.
+     * @return A Task object corresponding to the parsed line.
+     * @throws YapperException If the task type is invalid.
+     */
     private Task parseLine(String line) throws YapperException {
         String[] parts = line.split(" \\| ");
         String type = parts[0];
