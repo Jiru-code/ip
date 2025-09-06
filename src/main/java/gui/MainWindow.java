@@ -15,6 +15,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 /**
  * A GUI for MrYapper using FXML, orchestrates the input/ouput flow.
@@ -26,7 +29,7 @@ public class MainWindow extends Application {
     @FXML private TextField userInput;
     @FXML private Button sendButton;
 
-    private MrYapper mryapper;
+    private MrYapper mryapper = new MrYapper();
 
     private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/noobuser.png"));
     private final Image mryapperImage  = new Image(this.getClass().getResourceAsStream("/images/mryapper.png"));
@@ -47,8 +50,11 @@ public class MainWindow extends Application {
 
     @FXML
     public void initialize() {
-        // Auto-scroll to bottom as messages are added
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        scrollPane.setFitToWidth(true);
+
+        dialogContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
+            scrollPane.setVvalue(1.0);  // 1.0 == bottom
+        });
     }
 
     public void setYapper(MrYapper mryapper) {
