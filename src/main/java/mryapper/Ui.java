@@ -109,4 +109,8 @@ public class Ui {
     public String readCommand() {
         return scanner.nextLine();
     }
+
+    public void showText(String text) {
+        System.out.println(LINE + "\n" + text + "\n" + LINE);
+    }
 }

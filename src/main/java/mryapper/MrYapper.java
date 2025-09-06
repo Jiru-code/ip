@@ -20,6 +20,20 @@ public class MrYapper {
     private Parser parser;
 
     /**
+     * Acts as a result carrier for both GUI and CLI interfaces.
+     * */ 
+    private static class CommandResult {
+        final String message;
+        final boolean isExit;
+        CommandResult(String message, boolean isExit) {
+            this.message = message;
+            this.isExit = isExit;
+        }
+        static CommandResult of(String msg) { return new CommandResult(msg, false); }
+        static CommandResult exit(String msg) { return new CommandResult(msg, true); }
+    }
+
+    /**
      * Constructs a new chatbot instance, with new Ui, Parser and Storage classes initialised. 
      * Also retrieves the tasks that have been stored previously into the current 'tasks' field.
      */
@@ -36,67 +50,78 @@ public class MrYapper {
     }
 
     /**
-     * Runs the chatbot method
+     * Runs the chatbot for CLI
      */
     public void run() {
-        ui.showGreeting(); 
-        boolean isExit = false; // variable to determine whether the chatbot continues running in a loop
+        ui.showGreeting();
+        boolean isExit = false;
         while (!isExit) {
-            //reads the incoming command, and then parse and split it up into the main command (the first word)
-            //and the rest of the command (the rest of the words)
-            String fullCommand = ui.readCommand(); 
-            String[] parsedCommand = parser.parseCommand(fullCommand);
-            String command = parsedCommand[0].toLowerCase();
-            String args = parsedCommand[1];
-
-            try {
-                switch (command) {
-                case "bye":
-                    isExit = true;
-                    storage.saveTasks(tasks.getTasks());
-                    ui.showGoodbye();
-                    break;
-                case "list":
-                    ui.showTaskList(tasks.getTasks());
-                    break;
-                case "mark":
-                case "unmark":
-                    handleMarkCommand(command, args);
-                    break;
-                case "todo":
-                case "deadline":
-                case "event":
-                    handleTaskCommand(command, args);
-                    break;
-                case "delete":
-                    handleDeleteCommand(args);
-                    break;
-                case "find":
-                    handleFindCommand(args);
-                    break;
-                default:
-                    throw new YapperException("Unknown command.");
-                }
-            } catch (YapperException e) {
-                ui.showError(e.getMessage());
-            }
+            String fullCommand = ui.readCommand();
+            CommandResult result = processCommand(fullCommand);
+            ui.showText(result.message);
+            isExit = result.isExit;
         }
     }
 
-    private void handleMarkCommand(String command, String args) throws YapperException {
+    /**
+     * Runs the GUI entry
+     * @param fullCommand takes and parses the full user input text
+     * @return reply text
+     */
+    public String getResponse(String fullCommand) {
+        return processCommand(fullCommand).message;
+    }
+
+    private CommandResult processCommand(String fullCommand) {
+        String[] parsed = parser.parseCommand(fullCommand);
+        String command = parsed[0].toLowerCase();
+        String args = parsed[1];
+
+        try {
+            switch (command) {
+            case "bye":
+                storage.saveTasks(tasks.getTasks());
+                return CommandResult.exit("Bye. Hope to see you again soon!");
+
+            case "list":
+                return CommandResult.of(buildTaskListMessage(tasks.getTasks()));
+
+            case "mark":
+            case "unmark":
+                return CommandResult.of(handleMarkCore(command, args));
+
+            case "todo":
+            case "deadline":
+            case "event":
+                return CommandResult.of(handleAddTaskCore(command, args));
+
+            case "delete":
+                return CommandResult.of(handleDeleteCore(args));
+
+            case "find":
+                return CommandResult.of(handleFindCore(args));
+
+            default:
+                throw new YapperException("Unknown command.");
+            }
+        } catch (YapperException e) {
+            return CommandResult.of("Error: " + e.getMessage());
+        }
+    }
+
+    private String handleMarkCore(String command, String args) throws YapperException {
         if (args.isEmpty()) {
             throw new YapperException("Please provide a task number to " + command + ".");
         }
         int taskNumber = Integer.parseInt(args) - 1;
-        if (command.equals("mark")) {
-            ui.showMarkedTask(tasks.markTaskAsDone(taskNumber));
-        } else {
-            ui.showMarkedTask(tasks.markTaskAsUndone(taskNumber));
-        }
+        String msg = command.equals("mark")
+                ? tasks.markTaskAsDone(taskNumber)
+                : tasks.markTaskAsUndone(taskNumber);
         storage.saveTasks(tasks.getTasks());
+        return msg;
     }
 
-    private void handleTaskCommand(String command, String args) throws YapperException {
+    private String handleAddTaskCore(String command, String args) throws YapperException {
         if (args.isEmpty()) {
             throw new YapperException("The description of a " + command + " cannot be empty.");
         }
@@ -116,17 +141,19 @@ public class MrYapper {
         }
         tasks.add(newTask);
         storage.saveTasks(tasks.getTasks());
-        ui.showTaskAdded(newTask, tasks.getSize());
+        return "Got it. I've added this task:\n" + newTask
+                + "\nNow you have " + tasks.getSize() + " tasks in the list.";
     }
 
-    private void handleDeleteCommand(String args) throws YapperException {
+    private String handleDeleteCore(String args) throws YapperException {
         if (args.isEmpty()) {
             throw new YapperException("Please provide a task number to delete.");
         }
         int taskIndex = Integer.parseInt(args) - 1;
         Task removedTask = tasks.delete(taskIndex);
         storage.saveTasks(tasks.getTasks());
-        ui.showTaskRemoved(removedTask, tasks.getSize());
+        return "The task has been removed:\n" + removedTask
+                + "\nNow you have " + tasks.getSize() + " tasks in the list.";
     }
 
     /**
@@ -135,15 +162,30 @@ public class MrYapper {
      * @param args String words we want to find in our Task description.
      * @throws YapperException the user does not include keywords.
      */
-    private void handleFindCommand(String args) throws YapperException {
-        if(args.isEmpty()) {
+    private String handleFindCore(String args) throws YapperException {
+        if (args.isEmpty()) {
             throw new YapperException("Stop clowning and include a keyword for me to search for");
         }
-
         ArrayList<Task> foundTasks = tasks.findTasks(args);
-        ui.showTasksFound(foundTasks);
+        if (foundTasks.isEmpty()) {
+            return "No matching keyword found among tasks! Try something else.";
+        }
+        StringBuilder sb = new StringBuilder("I found the following matches!\n");
+        for (int i = 0; i < foundTasks.size(); i++) {
+            sb.append(i + 1).append(". ").append(foundTasks.get(i)).append("\n");
+        }
+        return sb.toString().trim();
     }
 
+    private String buildTaskListMessage(ArrayList<Task> list) {
+        if (list.isEmpty()) return "Empty tasks.";
+        StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n");
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(i + 1).append(". ").append(list.get(i)).append("\n");
+        }
+        return sb.toString().trim();
+    }
+    
     public static void main(String[] args) {
         new MrYapper().run();
     }
