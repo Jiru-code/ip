@@ -80,8 +80,10 @@ public class MainWindow extends Application {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        if (input == null || input.isBlank()) return;
-
+        if (input == null || input.isBlank()) {
+            return;
+        }
+        
         String response = mryapper.getResponse(input);
 
         if ("bye".equalsIgnoreCase(input.trim())) {

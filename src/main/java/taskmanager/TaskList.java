@@ -54,7 +54,7 @@ public class TaskList {
      * @return String that is returned by the markDone() function when a Task calls it.
      * @throws YapperException when invalid index number is given.
      */
-    public String markTaskAsDone(int index) throws YapperException {
+    public boolean markTaskAsDone(int index) throws YapperException {
         if (index < 0 || index >= tasks.size()) {
             throw new YapperException("Task number out of bounds!");
         }
@@ -68,7 +68,7 @@ public class TaskList {
      * @return a string representation when the method markUndone() is called on the Task specified.
      * @throws YapperException when index is invalid. Valid range: 0 <= index < number of tasks.
      */
-    public String markTaskAsUndone(int index) throws YapperException {
+    public boolean markTaskAsUndone(int index) throws YapperException {
         if (index < 0 || index >= tasks.size()) {
             throw new YapperException("Task number out of bounds!");
         }
