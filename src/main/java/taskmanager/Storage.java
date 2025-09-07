@@ -4,10 +4,14 @@ import mryapper.YapperException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -39,16 +43,20 @@ public class Storage {
         if (!taskFile.exists()) {
             try {
                 Files.createDirectories(this.filePath.getParent());
-                taskFile.createNewFile();
+                Files.createFile(this.filePath); // use NIO to create file
             } catch (IOException e) {
                 throw new YapperException("Could not create data file: " + e.getMessage());
             }
             return tasks;
         }
 
-        try (Scanner fileScanner = new Scanner(taskFile)) {
-            while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine();
+        try (BufferedReader r = Files.newBufferedReader(this.filePath, StandardCharsets.UTF_8)) {
+            String line;
+            while ((line = r.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) {
+                    continue;
+                }       
                 tasks.add(parseLine(line));
             }
         } catch (IOException e) {
@@ -64,9 +72,11 @@ public class Storage {
      * @throws YapperException If there is an error writing to the file.
      */
     public void saveTasks(ArrayList<Task> tasks) throws YapperException {
-        try (FileWriter writer = new FileWriter(this.filePath.toString())) {
+        Objects.requireNonNull(tasks, "tasks");
+        try (BufferedWriter w = Files.newBufferedWriter(this.filePath, StandardCharsets.UTF_8)) {
             for (Task task : tasks) {
-                writer.write(task.toFileString() + System.lineSeparator());
+                w.write(task.toFileString());
+                w.newLine();
             }
         } catch (IOException e) {
             throw new YapperException("Error saving tasks to a file! " + e.getMessage());

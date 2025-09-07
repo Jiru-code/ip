@@ -28,34 +28,28 @@ public class Task {
      * Checks if a task has already been marked as done before and if not,
      * mark it as done. A corresponding message to update the user on the status of the Task will be returned.
      * 
-     * @return String that will be displayed to the user regarding the status of task.
+     * @return Resulting boolean of the mark status to MrYapper to print corresponding message
      */
-    public String markDone() {
+    public boolean markDone() {
         if (isDone) {
-            return "Task has already been marked done!";
-        } else {
-            this.isDone = true;
-            String beDone = "Nice! I've marked this task as done: \n"
-                            + "  [" + this.getStatusIcon() + "] " + this.getDescription();
-            return beDone;
+            return false;
         }
+        this.isDone = true;
+        return true;
     }
 
     /** 
      * Checks if a task has already been marked as done before, and if so,
-     * unmark it. A corresponding message to update the user on the status of the task Task will be returned.
+     * unmark it.
      * 
-     * @return String that will be displayed to the user regarding the status of the task.
+     * @return Resulting boolean of the mark status to MrYapper to print corresponding message
      */
-    public String markUndone() {
-        if(isDone) {
-            this.isDone = false;
-            String beUndone = "Ok, I've marked this task as not done yet: \n"
-                             + "  [" + this.getStatusIcon() + "] " + this.getDescription();
-            return beUndone;
-        } else {
-            return "Task has not been marked done!";
+    public boolean markUndone() {
+        if (!isDone) {
+            return false;
         }
+        this.isDone = false;
+        return true;
     }
 
     @Override

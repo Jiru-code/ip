@@ -15,9 +15,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 /**
  * A GUI for MrYapper using FXML, orchestrates the input/ouput flow.
@@ -68,8 +65,10 @@ public class MainWindow extends Application {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        if (input == null || input.isBlank()) return;
-
+        if (input == null || input.isBlank()) {
+            return;
+        }
+        
         String response = mryapper.getResponse(input);
 
         if ("bye".equalsIgnoreCase(input.trim())) {

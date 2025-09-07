@@ -109,16 +109,29 @@ public class MrYapper {
         }
     }
 
-    private String handleMarkCore(String command, String args) throws YapperException {
-        if (args.isEmpty()) {
-            throw new YapperException("Please provide a task number to " + command + ".");
+    private int parseIndexOneBased(String args, String actionVerb) throws YapperException {
+        if (args == null || args.trim().isEmpty()) {
+            throw new YapperException("Please provide a task number to " + actionVerb + ".");
         }
-        int taskNumber = Integer.parseInt(args) - 1;
-        String msg = command.equals("mark")
-                ? tasks.markTaskAsDone(taskNumber)
-                : tasks.markTaskAsUndone(taskNumber);
+        try {
+            return Integer.parseInt(args.trim()) - 1;
+        } catch (NumberFormatException e) {
+            throw new YapperException("Please provide a valid task number to " + actionVerb + ".");
+        }
+    }
+
+    private String handleMarkCore(String command, String args) throws YapperException {
+        int idx = parseIndexOneBased(args, command);
+        boolean changed = command.equals("mark")
+                ? tasks.markTaskAsDone(idx)
+                : tasks.markTaskAsUndone(idx);
         storage.saveTasks(tasks.getTasks());
-        return msg;
+        Task t = tasks.getTasks().get(idx);
+        return command.equals("mark")
+                ? (changed ? "Nice! I've marked this task as done: \n  " + t.toString()
+                           : "Task has already been marked done!")
+                : (changed ? "Ok, I've marked this task as not done yet: \n  " + t.toString()
+                           : "Task has not been marked done!");
     }
 
     private String handleAddTaskCore(String command, String args) throws YapperException {
@@ -146,10 +159,7 @@ public class MrYapper {
     }
 
     private String handleDeleteCore(String args) throws YapperException {
-        if (args.isEmpty()) {
-            throw new YapperException("Please provide a task number to delete.");
-        }
-        int taskIndex = Integer.parseInt(args) - 1;
+        int taskIndex = parseIndexOneBased(args, "delete");
         Task removedTask = tasks.delete(taskIndex);
         storage.saveTasks(tasks.getTasks());
         return "The task has been removed:\n" + removedTask
