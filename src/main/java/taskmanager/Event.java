@@ -51,7 +51,7 @@ public class Event extends Task{
             this.to = null;
         }
 
-        // ensure correctness of endtimes if they are structured properly
+        // ensure correctness of the start and end times if they are structured properly
         if (from != null && to != null && to.isBefore(from)) {
             throw new YapperException("The end time cannot be before the start time."); 
         }
@@ -76,7 +76,7 @@ public class Event extends Task{
             this.to = null;
         }
 
-        // ensure correctness of endtimes if they are structured properly
+        // ensure correctness of the start and end times if they are structured properly
         if (from != null && to != null && to.isBefore(from)) {
             throw new YapperException("The end time cannot be before the start time.");
         }
