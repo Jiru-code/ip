@@ -6,7 +6,12 @@ import taskmanager.Storage;
 import taskmanager.Task;
 import taskmanager.TaskList;
 import taskmanager.ToDo;
+import taskmanager.ViewSchedules;
+
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Kickstarts the chatbot up and running.
@@ -101,6 +106,9 @@ public class MrYapper {
             case "find":
                 return CommandResult.of(handleFindCore(args));
 
+            case "schedule":
+            case "view":
+                return CommandResult.of(handleSchedule(args));
             default:
                 throw new YapperException("Unknown command.");
             }
@@ -186,6 +194,30 @@ public class MrYapper {
         }
         return sb.toString().trim();
     }
+
+    private String handleSchedule(String args) {
+        String raw = args == null ? "" : args.trim();
+        if (raw.isEmpty()) {
+            return "Please provide a date. Example: schedule 2025-09-07";
+        }
+    
+        // Accept either ISO date (yyyy-MM-dd) or d/M/yyyy
+        LocalDate date = null;
+        try {
+            date = LocalDate.parse(raw); // yyyy-MM-dd
+        } catch (DateTimeParseException ex) {
+            try {
+                DateTimeFormatter DMY = DateTimeFormatter.ofPattern("d/M/yyyy");
+                date = LocalDate.parse(raw, DMY);
+            } catch (DateTimeParseException ex2) {
+                return "I couldn't understand that date. Try yyyy-MM-dd or d/M/yyyy, e.g. schedule 2025-09-07";
+            }
+        }
+    
+        String message = ViewSchedules.forDate(this.tasks, date);
+        return message;
+    }
+    
 
     private String buildTaskListMessage(ArrayList<Task> list) {
         if (list.isEmpty()) return "Empty tasks.";
