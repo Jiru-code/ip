@@ -23,6 +23,7 @@ public class Storage {
      */
     public Storage(String filePath) {
         this.filePath = Paths.get(filePath);
+        assert this.filePath != null : "filePath must resolve to a Path";
     }
 
     /**
@@ -35,6 +36,7 @@ public class Storage {
     public ArrayList<Task> loadTasks() throws YapperException {
         ArrayList<Task> tasks = new ArrayList<>();
         File taskFile = this.filePath.toFile();
+        assert taskFile != null : "taskFile should not be null";
 
         if (!taskFile.exists()) {
             try {
@@ -83,6 +85,8 @@ public class Storage {
      */
     private Task parseLine(String line) throws YapperException {
         String[] parts = line.split(" \\| ");
+        assert parts.length >= 3 : "Malformed line (need at least type, isDone, description)";
+
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
 
