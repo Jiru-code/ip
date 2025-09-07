@@ -15,9 +15,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 /**
  * A GUI for MrYapper using FXML, orchestrates the input/ouput flow.
@@ -39,24 +36,39 @@ public class MainWindow extends Application {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
+    
+            // Controller from FXML should be a MainWindow
+            Object ctrl = fxmlLoader.getController();
+            assert ctrl instanceof MainWindow : "FXML controller is not MainWindow";
+            MainWindow mw = (MainWindow) ctrl;
+    
             Scene scene = new Scene(ap);
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setYapper(mryapper); 
+    
+            // mryapper must be constructed already
+            assert mryapper != null : "MrYapper not initialised";
+            mw.setYapper(mryapper);
+    
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
+    
     @FXML
     public void initialize() {
+        // FXML injections should be non-null if the fx:id matches
+        assert scrollPane != null : "scrollPane not injected";
+        assert dialogContainer != null : "dialogContainer not injected";
+        assert userInput != null : "userInput not injected";
+        assert sendButton != null : "sendButton not injected";
+    
+        // Must run on JavaFX Application Thread
+        assert javafx.application.Platform.isFxApplicationThread() : "Not on FX thread";
+    
         scrollPane.setFitToWidth(true);
-
-        dialogContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
-            scrollPane.setVvalue(1.0);  // 1.0 == bottom
-        });
+        dialogContainer.heightProperty().addListener((obs, oldVal, newVal) -> scrollPane.setVvalue(1.0));
     }
-
     public void setYapper(MrYapper mryapper) {
         this.mryapper = mryapper;
         // Show greeting from the bot

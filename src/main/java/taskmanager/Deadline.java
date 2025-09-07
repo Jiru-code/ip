@@ -25,6 +25,8 @@ public class Deadline extends Task{
      */
     public Deadline(String input) {
         super(input.split("/by")[0].trim());
+        assert this.description != null : "description must be initialised";
+
         String dateString = input.split("/by")[1].trim();
         try {
             if (dateString.contains(" ")) {
@@ -45,6 +47,9 @@ public class Deadline extends Task{
      */
     public Deadline(String description, String durationString) {
         super(description);
+        assert description != null : "description cannot be null";
+        assert durationString != null : "durationString cannot be null";
+        
         try {
             this.duration = LocalDateTime.parse(durationString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
         } catch (DateTimeParseException e) {
