@@ -30,6 +30,8 @@ public class Event extends Task{
      */
     public Event(String input) throws YapperException {
         super(input.split("/from")[0].trim());
+        assert this.description != null : "description must be initialised";
+
         String[] parts = input.split("/from")[1].split("/to");
         this.stringFrom = parts[0].trim();
         this.stringTo = parts[1].trim();
@@ -66,6 +68,9 @@ public class Event extends Task{
      */
     public Event(String description, String fromString, String toString) throws YapperException {
         super(description);
+        assert description != null : "description cannot be null";
+        assert fromString != null && toString != null : "fromString/toString cannot be null";
+
         this.stringFrom = fromString;
         this.stringTo = toString;
         try {
