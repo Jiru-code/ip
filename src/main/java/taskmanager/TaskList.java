@@ -25,20 +25,20 @@ public class TaskList {
     }
 
     /**
-     * Add a task called by TaskList
-     * 
-     * @param task A Task object
+     * Adds a task.
+     *
+     * @param task The task to add.
      */
     public void add(Task task) {
         tasks.add(task);
     }
 
     /**
-     * Delete a task on the TaskList called by the command "delete"
-     * 
-     * @param index The index number of the task on the TaskList. You may check the index number using the command "list"
-     * @return The Task at the specified index number.
-     * @throws YapperException when index is invalid. Valid range: 0 <= index < number of tasks. Error-by-one handled by main code on MrYapper.
+     * Deletes a task.
+     *
+     * @param index The zero-based index of the task to delete.
+     * @return The deleted task.
+     * @throws YapperException If the index is out of range (0 <= index < number of tasks).
      */
     public Task delete(int index) throws YapperException {
         if (index < 0 || index >= tasks.size()) {
@@ -48,11 +48,11 @@ public class TaskList {
     }
 
     /**
-     * Mark a task as done and display accordingly.
-     * 
-     * @param index The index number of a task when you call the command "list".
-     * @return String that is returned by the markDone() function when a Task calls it.
-     * @throws YapperException when invalid index number is given.
+     * Marks a task as done.
+     *
+     * @param index The zero-based index of the task to mark as done.
+     * @return A confirmation message.
+     * @throws YapperException If the index is out of range.
      */
     public boolean markTaskAsDone(int index) throws YapperException {
         if (index < 0 || index >= tasks.size()) {

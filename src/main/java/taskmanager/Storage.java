@@ -2,7 +2,6 @@ package taskmanager;
 
 import mryapper.YapperException;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Scanner;
 
 /**
  * Control all functionalities of storing the lists of tasks offline on the device.
