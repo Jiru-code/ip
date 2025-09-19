@@ -18,12 +18,16 @@ MrYapper lets you add different kinds of tasks:
 
 Example usage:
 > todo buy milk
+
 > deadline submit report /by 2025-09-30
+
 > event project meeting /at 2025-09-22 14:00
 
 Expected outcome:
 > Got it. I've added this task:
+
 > [D][ ] submit report (by: 2025-09-30)
+
 > Now you have 3 tasks in the list.
 
 
@@ -37,8 +41,11 @@ Example usage:
 
 Expected outcome:
 > Here are the tasks in your list:
+
 > [T][ ] buy milk
+
 > [D][ ] submit report (by: 2025-09-30)
+
 > [E][ ] project meeting (at: 2025-09-22 14:00)
 
 
@@ -52,6 +59,7 @@ Example usage:
 
 Expected outcome:
 > Nice! I've marked this task as done:
+
 > [T][X] buy milk
 
 
@@ -65,6 +73,7 @@ Example usage:
 
 Expected outcome:
 > Here are your tasks on 2025-09-22:
+
 > [E][ ] project meeting (at: 2025-09-22 14:00)
 
 
@@ -78,7 +87,9 @@ Example usage:
 
 Expected outcome:
 > Noted. I've removed this task:
+
 > [D][ ] submit report (by: 2025-09-30)
+
 > Now you have 2 tasks in the list.
 
 
