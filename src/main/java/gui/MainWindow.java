@@ -97,11 +97,17 @@ public class MainWindow extends Application {
             return;
         }
 
-        dialogContainer.getChildren().addAll(
-            DialogBox.getUserDialog(input, userImage),
-            DialogBox.getMrYapperDialog(response, mryapperImage)
-        );
-
+        if (response.startsWith("Error:")) {
+            dialogContainer.getChildren().addAll(
+                DialogBox.getUserDialog(input, userImage),
+                DialogBox.getErrorDialog(response, mryapperImage)
+            );
+        } else {
+            dialogContainer.getChildren().addAll(
+                DialogBox.getUserDialog(input, userImage),
+                DialogBox.getMrYapperDialog(response, mryapperImage)
+            );
+        }
         userInput.clear();
     }
 }

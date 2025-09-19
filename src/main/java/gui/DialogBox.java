@@ -65,4 +65,12 @@ public class DialogBox extends HBox {
         db.flip();
         return db;
     }
+
+    public static DialogBox getErrorDialog(String text, Image img) {
+        DialogBox db = new DialogBox(text, img, false); // false = not user
+        db.dialog.getStyleClass().clear();
+        db.flip();
+        db.dialog.getStyleClass().addAll("bubble", "bubble-error");
+        return db;
+    }
 }

@@ -52,6 +52,17 @@
     -fx-text-fill: #102a43;
 }
 
+.bubble-error {
+    -fx-background-color: #ffcccc;       
+    -fx-text-fill: #a70000;        
+    -fx-font-weight: bold;
+    -fx-background-radius: 14;
+    -fx-padding: 10 12 10 12;
+    -fx-max-width: 420;
+    -fx-wrap-text: true;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0.16, 0, 2);
+}
+
 #dialogContainer {
     -fx-spacing: 8;
 }
