@@ -86,7 +86,7 @@ public class MrYapper {
             switch (command) {
             case "bye":
                 storage.saveTasks(tasks.getTasks());
-                return CommandResult.exit("Bye. Hope to see you again soon!");
+                return CommandResult.exit("Had fun yapping with you. Come back and yap together soon!");
 
             case "list":
                 return CommandResult.of(buildTaskListMessage(tasks.getTasks()));
@@ -110,7 +110,20 @@ public class MrYapper {
             case "view":
                 return CommandResult.of(handleSchedule(args));
             default:
-                throw new YapperException("Unknown command.");
+                throw new YapperException(
+                    "Invalid command. The list of available commands are:\n"
+                    + "/bye\n"
+                    + "/list\n"
+                    + "/mark\n"
+                    + "/unmark\n"
+                    + "/todo\n"
+                    + "/deadline\n"
+                    + "/event\n"
+                    + "/delete\n"
+                    + "/find\n"
+                    + "/schedule\n"
+                    + "/return\n"
+                );
             }
         } catch (YapperException e) {
             return CommandResult.of("Error: " + e.getMessage());
@@ -119,12 +132,14 @@ public class MrYapper {
 
     private int parseIndexOneBased(String args, String actionVerb) throws YapperException {
         if (args == null || args.trim().isEmpty()) {
-            throw new YapperException("Please provide a task number to " + actionVerb + ".");
+            throw new YapperException("Please provide a task number to " + actionVerb + "!");
         }
         try {
             return Integer.parseInt(args.trim()) - 1;
         } catch (NumberFormatException e) {
-            throw new YapperException("Please provide a valid task number to " + actionVerb + ".");
+            throw new YapperException("I did not recognise that task number! Please provide a valid number to" 
+            + actionVerb + "."
+            );
         }
     }
 
@@ -136,27 +151,30 @@ public class MrYapper {
         storage.saveTasks(tasks.getTasks());
         Task t = tasks.getTasks().get(idx);
         return command.equals("mark")
-                ? (changed ? "Nice! I've marked this task as done: \n  " + t.toString()
+                ? (changed ? "Great job completing the task:\n  " + t.toString()
                            : "Task has already been marked done!")
-                : (changed ? "Ok, I've marked this task as not done yet: \n  " + t.toString()
+                : (changed ? (
+                    "Oh no you thought you finished a task but you didn't?" 
+                    + "Ok, I've marked this task as not done yet: \n  " + t.toString()
+                )
                            : "Task has not been marked done!");
     }
 
     private String handleAddTaskCore(String command, String args) throws YapperException {
         if (args.isEmpty()) {
-            throw new YapperException("The description of a " + command + " cannot be empty.");
+            throw new YapperException("Tell me a whooooooooole lot more about " + command + "! :)");
         }
         Task newTask;
         if (command.equals("todo")) {
             newTask = new ToDo(args);
         } else if (command.equals("deadline")) {
             if (!args.contains("/by")) {
-                throw new YapperException("Have you told me when your task is /by??");
+                throw new YapperException("Hey hey hey have you told me when your task is /by??");
             }
             newTask = new Deadline(args);
         } else {
             if (!args.contains("/from") || !args.contains("/to")) {
-                throw new YapperException("Have you told me when your task is /from when /to when??");
+                throw new YapperException("Hellloo? Have you told me when your task is /from when /to when??");
             }
             newTask = new Event(args);
         }
@@ -170,8 +188,10 @@ public class MrYapper {
         int taskIndex = parseIndexOneBased(args, "delete");
         Task removedTask = tasks.delete(taskIndex);
         storage.saveTasks(tasks.getTasks());
-        return "The task has been removed:\n" + removedTask
-                + "\nNow you have " + tasks.getSize() + " tasks in the list.";
+        return (
+            removedTask + "is gone and out of the way... FOREVER!!"
+            + "\nNow you have " + tasks.getSize() + " tasks in the list."
+        );
     }
 
     /**
@@ -186,7 +206,7 @@ public class MrYapper {
         }
         ArrayList<Task> foundTasks = tasks.findTasks(args);
         if (foundTasks.isEmpty()) {
-            return "No matching keyword found among tasks! Try something else.";
+            return "Girl there's no matching keyword found among tasks. C'mon try something else.";
         }
         StringBuilder sb = new StringBuilder("I found the following matches!\n");
         for (int i = 0; i < foundTasks.size(); i++) {
@@ -210,7 +230,7 @@ public class MrYapper {
                 DateTimeFormatter DMY = DateTimeFormatter.ofPattern("d/M/yyyy");
                 date = LocalDate.parse(raw, DMY);
             } catch (DateTimeParseException ex2) {
-                return "I couldn't understand that date. Try yyyy-MM-dd or d/M/yyyy, e.g. schedule 2025-09-07";
+                return "Girl I couldn't understand that date. Try yyyy-MM-dd or d/M/yyyy, e.g. schedule 2025-09-07";
             }
         }
     

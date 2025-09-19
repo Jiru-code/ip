@@ -1,0 +1,64 @@
+.root {
+    -fx-background-image: url("background.jpg");
+    -fx-background-repeat: stretch;
+    -fx-background-size: cover;  
+    -fx-background-position: center center;
+    -fx-font-family: "Segoe UI";
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* If your root content is an AnchorPane / VBox, keep them transparent too */
+.anchor-pane, .vbox {
+    -fx-background-color: transparent;
+}
+
+.label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+}
+
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.bubble {
+    -fx-background-radius: 14;     /* rounded corners */
+    -fx-background-insets: 0;
+    -fx-padding: 10 12 10 12;      /* inner padding around text */
+    -fx-wrap-text: true;           /* ensure wrapping if applied to Labeled */
+    -fx-max-width: 420;            /* cap line length (tweak as you like) */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 6, 0.16, 0, 2);
+    -fx-font-size: 14px;
+}
+
+/* Bot (MrYapper) bubble */
+.bubble-bot {
+    -fx-background-color: #d3ad8b; 
+    -fx-text-fill: #222;          
+}
+
+/* User bubble */
+.bubble-user {
+    -fx-background-color: #a9bed1;
+    -fx-text-fill: #102a43;
+}
+
+#dialogContainer {
+    -fx-spacing: 8;
+}
+
+.dialog-user {
+    -fx-alignment: CENTER_RIGHT;
+}
+.dialog-bot {
+    -fx-alignment: CENTER_LEFT;
+}

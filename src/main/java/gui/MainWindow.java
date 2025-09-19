@@ -43,6 +43,7 @@ public class MainWindow extends Application {
             MainWindow mw = (MainWindow) ctrl;
     
             Scene scene = new Scene(ap);
+            scene.getStylesheets().add(getClass().getResource("/styles/app.css").toExternalForm());
             stage.setScene(scene);
     
             // mryapper must be constructed already
@@ -73,7 +74,10 @@ public class MainWindow extends Application {
         this.mryapper = mryapper;
         // Show greeting from the bot
         dialogContainer.getChildren().add(
-            DialogBox.getMrYapperDialog("Hello! I'm Mr Yapper\nWhat can I do for you?", mryapperImage)
+            DialogBox.getMrYapperDialog("Hello! I'm your best yapper Mr Yapper!\n"
+            + "Tell me all about your tasks you need to do!", 
+            mryapperImage
+            )
         );
     }
 
